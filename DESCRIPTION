@@ -1,8 +1,9 @@
 Package: predictsr
 Title: Access the 'PREDICTS' Biodiversity Database
-Version: 0.1.0
-Authors@R: 
-    person("Connor", "Duffin", , "connor.p.duffin@gmail.com", role = c("aut", "cre", "cph"))
+Version: 0.1.1
+Authors@R: c(
+    person("Connor", "Duffin", , "connor.p.duffin@gmail.com", role = c("aut", "cre")),
+    person("The Trustees of The Natural History Museum, London", role = c("cph")))
 Description: Fetches the 'PREDICTS' database and relevant metadata from the Data
     Portal at the Natural History Museum, London <https://data.nhm.ac.uk>. Data
     were collated from over 400 existing spatial comparisons of local-scale
@@ -20,8 +21,9 @@ Config/testthat/parallel: true
 VignetteBuilder: knitr
 URL: https://biodiversity-futures-lab.github.io/predictsr/
 NeedsCompilation: no
-Packaged: 2025-07-07 10:15:10 UTC; connd
-Author: Connor Duffin [aut, cre, cph]
+Packaged: 2025-07-23 17:48:43 UTC; connd
+Author: Connor Duffin [aut, cre],
+  The Trustees of The Natural History Museum, London [cph]
 Maintainer: Connor Duffin <connor.p.duffin@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-07-10 14:50:02 UTC
+Date/Publication: 2025-07-23 22:40:02 UTC

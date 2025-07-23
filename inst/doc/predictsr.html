@@ -348,13 +348,17 @@ download the latest versions of the PREDICTS database and some related
 metadata.</p>
 <p>The <a href="https://www.nhm.ac.uk/our-science/research/projects/predicts/science.html">PREDICTS</a>
 database comprises over 4 million measurements of species at sites
-across the world. The data are mostly collected from arthropods (mainly
-insects), and we cover about 2% of the species known by science. All
-major terrestrial plant, animal, and fungal groups are covered. There
-have been 2 public releases of PREDICTS data. The first was in <a href="https://data.nhm.ac.uk/dataset/the-2016-release-of-the-predicts-database-v1-1">2016</a>
+across the world. All major terrestrial plant, animal, and fungal groups
+are represented within the data. The most well-represented group in the
+data are arthropods (mainly insects), covering about 2% of the species
+known by science</p>
+<p>There have been 2 public releases of PREDICTS data. The first was in
+<a href="https://data.nhm.ac.uk/dataset/the-2016-release-of-the-predicts-database-v1-1">2016</a>
 and the second was in <a href="https://data.nhm.ac.uk/dataset/release-of-data-added-to-the-predicts-database-november-2022">2022</a>;
 each consisted of about 3 million and 1 million records, respectively.
 We include both, as a single dataset, in this package.</p>
+<p><em>However</em>, the PREDICTS database is under constant development
+and is continuously growing, with later releases planned.</p>
 <p>To get started, let’s load in the database into R and poke around. To
 do so you will use the <code>GetPredictsData</code> function, which
 pulls in the data from the data portal. I’ll repeat the default option
@@ -430,22 +434,28 @@ fetch. It reads in both extracts into a single dataframe:</p>
 ##  $ Higher_taxon                           : Factor w/ 63 levels &quot;&quot;,&quot;Actinopterygii&quot;,..: 26 26 26 26 26 26 26 26 26 26 ...
 ##  $ Measurement                            : num  42 242 232 111 63 5 22 5 9 10 ...
 ##  $ Effort_corrected_measurement           : num  42 242 232 185 94.5 5 22 5 9 10 ...</code></pre>
+<p>Be patient as this may take a few seconds to run, as it downloads the
+data from the NHM Data Portal.</p>
 <p>So we can see that there are over 4 million records in the combined
 PREDICTS extracts. Let’s look at a set of summary statistics for the
 database:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>taxa <span class="ot">&lt;-</span> predicts[</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">duplicated</span>(predicts[, <span class="fu">c</span>(<span class="st">&quot;Source_ID&quot;</span>, <span class="st">&quot;Study_name&quot;</span>, <span class="st">&quot;Taxon_name_entered&quot;</span>)]),</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>]</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>species_counts <span class="ot">&lt;-</span> <span class="fu">length</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="fu">unique</span>(taxa[taxa<span class="sc">$</span>Rank <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>, <span class="st">&quot;Infraspecies&quot;</span>), <span class="st">&quot;Taxon&quot;</span>])</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>) <span class="sc">+</span>  <span class="fu">nrow</span>(taxa[<span class="sc">!</span>taxa<span class="sc">$</span>Rank <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>, <span class="st">&quot;Infraspecies&quot;</span>), ])</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">print</span>(glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="st">&quot;This database has {length(unique(predicts$SS))} studies across &quot;</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="st">&quot;{length(unique(predicts$SSBS))} sites, in &quot;</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="st">&quot;{length(unique(predicts$Country))} countries, and with &quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="st">&quot;{species_counts} species.&quot;</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(predicts) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  taxa <span class="ot">&lt;-</span> predicts[</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">duplicated</span>(predicts[, <span class="fu">c</span>(<span class="st">&quot;Source_ID&quot;</span>, <span class="st">&quot;Study_name&quot;</span>, <span class="st">&quot;Taxon_name_entered&quot;</span>)]),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  ]</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  species_counts <span class="ot">&lt;-</span> <span class="fu">length</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="fu">unique</span>(taxa[taxa<span class="sc">$</span>Rank <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>, <span class="st">&quot;Infraspecies&quot;</span>), <span class="st">&quot;Taxon&quot;</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  ) <span class="sc">+</span>  <span class="fu">nrow</span>(taxa[<span class="sc">!</span>taxa<span class="sc">$</span>Rank <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Species&quot;</span>, <span class="st">&quot;Infraspecies&quot;</span>), ])</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">print</span>(glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="st">&quot;This database has {length(unique(predicts$SS))} studies across &quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="st">&quot;{length(unique(predicts$SSBS))} sites, in &quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="st">&quot;{length(unique(predicts$Country))} countries, and with &quot;</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="st">&quot;{species_counts} species.&quot;</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  ))</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">&quot;No data available - check the download!&quot;</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>## This database has 817 studies across 35736 sites, in 101 countries, and with 54863 species.</code></pre>
 <p>So over 30,000 sites, 101 countries, and 12,892 species in this
 dataframe! There are a couple of important columns that should be noted.
@@ -457,10 +467,14 @@ of <code>Source_ID</code>, <code>Study_number</code>, <code>Block</code>
 and <code>Site_number</code>, which is what we use to identify single
 sites in the database.</p>
 <p>Let’s also check the ranges of sample collection in the database:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">print</span>(glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="st">&quot;Earliest sample collection (midpoint): {min(predicts$Sample_midpoint)}, &quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;latest sample collection (midpoint): {max(predicts$Sample_midpoint)}&quot;</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(predicts) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">print</span>(glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="st">&quot;Earliest sample collection (midpoint): {min(predicts$Sample_midpoint)}, &quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="st">&quot;latest sample collection (midpoint): {max(predicts$Sample_midpoint)}&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  ))</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">&quot;No data available in the PREDICTS database - check the download!&quot;</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>## Earliest sample collection (midpoint): 1984-04-22, latest sample collection (midpoint): 2018-05-01</code></pre>
 <div id="accessing-site-level-summaries" class="section level2">
 <h2>Accessing site-level summaries</h2>
@@ -523,7 +537,9 @@ similar to pull in the summaries for the same data as above:</p>
 ##  $ Higher_taxa                            : chr  &quot;Hymenoptera&quot; &quot;Hymenoptera&quot; &quot;Hymenoptera&quot; &quot;Hymenoptera&quot; ...</code></pre>
 <p>Investigating the summary data closer we see that there are a number
 of missing columns between the two dataframes:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(predicts)[<span class="sc">!</span>(<span class="fu">names</span>(predicts) <span class="sc">%in%</span> <span class="fu">names</span>(summaries))])</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(predicts) <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="fu">nrow</span>(summaries) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">names</span>(predicts)[<span class="sc">!</span>(<span class="fu">names</span>(predicts) <span class="sc">%in%</span> <span class="fu">names</span>(summaries))])</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>##  [1] &quot;Taxon_number&quot;                 &quot;Taxon_name_entered&quot;          
 ##  [3] &quot;Indication&quot;                   &quot;Parsed_name&quot;                 
 ##  [5] &quot;Taxon&quot;                        &quot;COL_ID&quot;                      
@@ -541,24 +557,26 @@ These would be the following (roughly):</p>
 <p><strong>Note:</strong> I’m not sure on the summary statistics for
 this one, there seems to be some differences, and there are a couple
 sites that don’t match up.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>summaries_rep <span class="ot">&lt;-</span> predicts <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">Higher_taxa =</span> <span class="fu">paste</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(Higher_taxon)), <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>),</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">N_samples =</span> <span class="fu">length</span>(Measurement),</span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">Rescaled_sampling_effort =</span> <span class="fu">mean</span>(Rescaled_sampling_effort),</span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">.by =</span> SSBS</span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">names</span>(summaries))</span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">|&gt;</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(SSBS)</span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>summaries_copy <span class="ot">&lt;-</span> summaries <span class="sc">|&gt;</span></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="fu">subset</span>(SSBS <span class="sc">%in%</span> summaries_rep<span class="sc">$</span>SSBS) <span class="sc">|&gt;</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(SSBS)</span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="fu">all.equal</span>(summaries_copy, summaries_rep)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(summaries) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  summaries_rep <span class="ot">&lt;-</span> predicts <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>      <span class="at">Higher_taxa =</span> <span class="fu">paste</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(Higher_taxon)), <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>      <span class="at">N_samples =</span> <span class="fu">length</span>(Measurement),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>      <span class="at">Rescaled_sampling_effort =</span> <span class="fu">mean</span>(Rescaled_sampling_effort),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>      <span class="at">.by =</span> SSBS</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">names</span>(summaries))</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(SSBS)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  </span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  summaries_copy <span class="ot">&lt;-</span> summaries <span class="sc">|&gt;</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>    <span class="fu">subset</span>(SSBS <span class="sc">%in%</span> summaries_rep<span class="sc">$</span>SSBS) <span class="sc">|&gt;</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(SSBS)</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  </span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  <span class="fu">all.equal</span>(summaries_copy, summaries_rep)</span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>##  [1] &quot;Attributes: &lt; Component \&quot;row.names\&quot;: 35719 string mismatches &gt;&quot;                                                            
 ##  [2] &quot;Component \&quot;Source_ID\&quot;: Attributes: &lt; Component \&quot;levels\&quot;: Lengths (707, 708) differ (string compare on first 707) &gt;&quot;      
 ##  [3] &quot;Component \&quot;Study_common_taxon\&quot;: 1905 string mismatches&quot;                                                                    
